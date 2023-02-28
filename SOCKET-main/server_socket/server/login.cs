@@ -119,6 +119,9 @@ namespace server
 
 					//같은 id와 pw와 있는 지 돌려야지
 
+					// id는 primary key니까 중복없을 것이고
+					//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
+
 					if (dataSet.Tables[0].Rows.Count >= 1)
 					{
 						MessageBox.Show(cmd.CommandText);
