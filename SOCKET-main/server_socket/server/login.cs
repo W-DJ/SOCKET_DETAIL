@@ -94,53 +94,58 @@ namespace server
 			string id = textBox1.Text;
 
 			string pw = textBox2.Text;
-			
+
 			OdbcCommand cmd = new OdbcCommand();
 			cmd.CommandType = CommandType.Text;
-			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "',pw = '"+pw+"';";
+			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+			int rowCnt = 0; //rowCnt 설정했음
 
+			
 			OdbcConnection conn = new OdbcConnection(con.dbConnectString);
 
 			//MessageBox.Show(cmd.CommandText);
-			
-			
-			conn.Open();
+					DataSet dataSet = new DataSet();
+
+
 
 			try
 			{
+				cmd.Connection = conn;
+				
 				if (con.dbOpenState)
 				{
-					DataSet dataSet = new DataSet();
-					cmd.Connection = con.dbConn;
 					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-
 					adapter.Fill(dataSet);
 					adapter.DeleteCommand = cmd;
+
 
 					//같은 id와 pw와 있는 지 돌려야지
 
 					// id는 primary key니까 중복없을 것이고
 					//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
 
-					if (dataSet.Tables[0].Rows.Count >= 1)
+
+/*
+					if (dataSet.Tables.Count == 0)
 					{
-						MessageBox.Show(cmd.CommandText);
+						MessageBox.Show("데이터 없음");
+						
 					}
+					
 					else
 					{
-						MessageBox.Show("데이터가 없습니다.");
+						MessageBox.Show("로그인.");
 					}
-
+*/
 
 
 				}
 			}
 			catch (OdbcException)
 			{
-				conn.Close();
-				return;
+				throw;
 			}
 		}
-	
+
 	}
 }
