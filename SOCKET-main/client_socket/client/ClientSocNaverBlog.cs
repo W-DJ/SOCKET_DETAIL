@@ -37,7 +37,7 @@ namespace client
 			{
 				if (isOpen && dataSocket.Connected)
 				{
-					MessageBox.Show("소켓이 이미열려있음");
+					MessageBox.Show("소켓이 이미 열려 있습니다.");
 					return;
 				}
 				isOpen = true;
@@ -60,7 +60,7 @@ namespace client
 		{
 			if (!isOpen)
 			{
-				MessageBox.Show("소켓이 안 열려있음");
+				MessageBox.Show("소켓이 열려있지 않습니다.");
 				return;   //돌려보내기
 			} 
 			string msg = textBox3.Text; // 보내는 msg
@@ -69,14 +69,14 @@ namespace client
 
 			dataSocket.Close();
 			dataSocket= null;
-			MessageBox.Show("소켓을 닫았음");
+			MessageBox.Show("소켓을 닫았습니다.");
 		}
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
 			if (!isOpen)
 			{
-				MessageBox.Show("소켓 열어!");
+				MessageBox.Show("소켓을 열어주세요.");
 				return;
 
 			}
