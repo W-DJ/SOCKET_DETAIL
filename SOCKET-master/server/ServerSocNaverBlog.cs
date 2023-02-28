@@ -53,11 +53,11 @@ namespace server
 				acceptSocket.Bind(new IPEndPoint(IPAddress.Any, int.Parse("5000")));
 				acceptSocket.Listen(1);
 				acceptSocket.BeginAccept(OnAccept, null);
-				MessageBox.Show("서버 소켓이 열렸습니다");
+				MessageBox.Show("서버 소켓이 열렸다");
 			}
 			catch (Exception)
 			{
-				MessageBox.Show("서버 소켓을 열 수 없습니다.");
+				MessageBox.Show("서버 소켓을 열수 없다.");
 			}
 
 
@@ -135,7 +135,6 @@ namespace server
 			string msg = textBox3.Text;
 			dataSocket.Send(Encoding.Default.GetBytes(msg));
 			//MessageBox.Show("보낸 메세지:" + msg);
-			listChat.Items.Add(" 관리자 : " + msg);
 
 			textBox3.Text = "";   //엔터 누르면 메세지 안보임 
 		
@@ -145,14 +144,14 @@ namespace server
 
 		}
 
-		private void textBox3_KeyDown(object sender, KeyEventArgs e)
+		private void txtSend_KeyDown(object sender, KeyEventArgs e)  //엔터키 누르면 전송되게 하기
 		{
 			if (e.KeyCode == System.Windows.Forms.Keys.Enter)
 			{
 				btnSend_Click(sender, null);
 			}
 		}
-
+		
 
 
 	}
