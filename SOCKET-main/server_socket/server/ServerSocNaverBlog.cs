@@ -30,11 +30,12 @@ namespace server
 		public Server()
 		{
 			InitializeComponent();
+	
 		}
 
 		private void Server_Load(object sender, EventArgs e)
 		{
-
+			
 		}
 	
 		private void btnOpen_Click(object sender, EventArgs e)
@@ -78,7 +79,7 @@ namespace server
 			}
 			else
 			{
-				MessageBox.Show("소켓 모두 연결되어있습니다.");
+				MessageBox.Show("소켓 모두 연결되어 있습니다.");
 			}
 		}
 

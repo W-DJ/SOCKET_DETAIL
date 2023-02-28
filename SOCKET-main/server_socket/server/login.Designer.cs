@@ -32,14 +32,14 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button1_new = new System.Windows.Forms.Button();
-			this.button1_login = new System.Windows.Forms.Button();
+			this.btn_new = new System.Windows.Forms.Button();
+			this.btn_login = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(287, 233);
+			this.label2.Location = new System.Drawing.Point(220, 211);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(53, 12);
 			this.label2.TabIndex = 17;
@@ -48,7 +48,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(287, 182);
+			this.label1.Location = new System.Drawing.Point(220, 160);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(41, 12);
 			this.label1.TabIndex = 16;
@@ -57,7 +57,7 @@
 			// textBox2
 			// 
 			this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox2.Location = new System.Drawing.Point(289, 248);
+			this.textBox2.Location = new System.Drawing.Point(222, 226);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.Size = new System.Drawing.Size(100, 21);
 			this.textBox2.TabIndex = 15;
@@ -65,43 +65,44 @@
 			// textBox1
 			// 
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox1.Location = new System.Drawing.Point(289, 197);
+			this.textBox1.Location = new System.Drawing.Point(222, 175);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(100, 21);
 			this.textBox1.TabIndex = 14;
 			// 
-			// button1_new
+			// btn_new
 			// 
-			this.button1_new.Location = new System.Drawing.Point(404, 182);
-			this.button1_new.Margin = new System.Windows.Forms.Padding(0);
-			this.button1_new.Name = "button1_new";
-			this.button1_new.Size = new System.Drawing.Size(110, 37);
-			this.button1_new.TabIndex = 13;
-			this.button1_new.Text = "가입하기";
-			this.button1_new.UseVisualStyleBackColor = true;
-			this.button1_new.Click += new System.EventHandler(this.button1_new_Click);
+			this.btn_new.Location = new System.Drawing.Point(337, 160);
+			this.btn_new.Margin = new System.Windows.Forms.Padding(0);
+			this.btn_new.Name = "btn_new";
+			this.btn_new.Size = new System.Drawing.Size(110, 37);
+			this.btn_new.TabIndex = 13;
+			this.btn_new.Text = "가입하기";
+			this.btn_new.UseVisualStyleBackColor = true;
+			this.btn_new.Click += new System.EventHandler(this.btn_new_Click);
 			// 
-			// button1_login
+			// btn_login
 			// 
-			this.button1_login.Location = new System.Drawing.Point(404, 233);
-			this.button1_login.Margin = new System.Windows.Forms.Padding(0);
-			this.button1_login.Name = "button1_login";
-			this.button1_login.Size = new System.Drawing.Size(110, 37);
-			this.button1_login.TabIndex = 18;
-			this.button1_login.Text = "로그인";
-			this.button1_login.UseVisualStyleBackColor = true;
+			this.btn_login.Location = new System.Drawing.Point(337, 211);
+			this.btn_login.Margin = new System.Windows.Forms.Padding(0);
+			this.btn_login.Name = "btn_login";
+			this.btn_login.Size = new System.Drawing.Size(110, 37);
+			this.btn_login.TabIndex = 18;
+			this.btn_login.Text = "로그인";
+			this.btn_login.UseVisualStyleBackColor = true;
+			this.btn_login.Click += new System.EventHandler(this.btn_login_Click);
 			// 
 			// login
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.button1_login);
+			this.Controls.Add(this.btn_login);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textBox2);
 			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.button1_new);
+			this.Controls.Add(this.btn_new);
 			this.Name = "login";
 			this.Text = "login";
 			this.Load += new System.EventHandler(this.login_Load);
@@ -116,7 +117,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox textBox2;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button button1_new;
-		private System.Windows.Forms.Button button1_login;
+		private System.Windows.Forms.Button btn_new;
+		private System.Windows.Forms.Button btn_login;
 	}
 }

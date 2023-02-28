@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Cubrid DB Connect -->
+  <DB_Connect>
+    DRIVER={CUBRID Driver};
+    SERVER=10.10.10.60;
+    PORT=33000;
+    UID=dba;
+    PWD=test;
+    DB_NAME=socket;
+    CHARSET=UTF-8;</DB_Connect>

@@ -61,6 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="signup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="signup.Designer.cs">
+      <DependentUpon>signup.cs</DependentUpon>
+    </Compile>
     <Compile Include="login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,9 @@
     <Compile Include="ServerSocNaverBlog.Designer.cs">
       <DependentUpon>ServerSocNaverBlog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="signup.resx">
+      <DependentUpon>signup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
     </EmbeddedResource>

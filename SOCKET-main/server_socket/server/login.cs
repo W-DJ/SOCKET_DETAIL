@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace server
 {
@@ -22,7 +23,7 @@ namespace server
 			public bool dbOpenState;
 			public OdbcConnection dbConn;//큐브리드 연결.
 
-		} 
+		}
 
 		public cubridConn con = new cubridConn();
 		public login()
@@ -51,7 +52,7 @@ namespace server
 				MessageBox.Show("실행 파일 에러. 관리자에게 문의하세요.");
 			}
 		}
-		
+
 		private void Thread_CubridConnect()
 		{
 			System.Threading.Timer thTimer_DB = new System.Threading.Timer(DB_Connect);
@@ -82,44 +83,61 @@ namespace server
 			}
 		}
 
-		private void button1_new_Click(object sender, EventArgs e)
+		private void btn_new_Click(object sender, EventArgs e)
+		{
+			signup signup = new signup();
+			signup.ShowDialog();
+		}
+
+		private void btn_login_Click(object sender, EventArgs e)
 		{
 			string id = textBox1.Text;
-			// 문자열 id 변수는 txtbox_id 의 텍스트값
-			string pw = textBox2.Text;
-			// 문자열 pw 변수는 txtbox_pw의 텍스트값
 
+			string pw = textBox2.Text;
+			
 			OdbcCommand cmd = new OdbcCommand();
 			cmd.CommandType = CommandType.Text;
-			cmd.CommandText = "INSERT INTO dbcon (id, pw) VALUES id = '" + id + "',pw = '" + pw + "';";
+			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "',pw = '"+pw+"';";
 
 			OdbcConnection conn = new OdbcConnection(con.dbConnectString);
 
-			DataSet dataSet = new DataSet();
+			//MessageBox.Show(cmd.CommandText);
+			
+			
+			conn.Open();
 
 			try
 			{
 				if (con.dbOpenState)
 				{
+					DataSet dataSet = new DataSet();
 					cmd.Connection = con.dbConn;
 					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-					if (dataSet.Tables[0].Rows.Count!=0)
+
+					adapter.Fill(dataSet);
+					adapter.DeleteCommand = cmd;
+
+					//같은 id와 pw와 있는 지 돌려야지
+
+					if (dataSet.Tables[0].Rows.Count >= 1)
 					{
-						MessageBox.Show("오오오");
+						MessageBox.Show(cmd.CommandText);
 					}
 					else
 					{
-						MessageBox.Show("가입되었습니다.");
+						MessageBox.Show("데이터가 없습니다.");
 					}
+
+
 
 				}
 			}
-			catch (Exception)
+			catch (OdbcException)
 			{
 				conn.Close();
-				throw;
+				return;
 			}
 		}
-
+	
 	}
 }
