@@ -98,7 +98,16 @@ namespace server
 			string id = textBox2.Text;
 			string pw = textBox3.Text;
 
-			cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
+			
+
+			string sql = "INSERT INTO sock_table (name, id, pw) VALUES (@param1,@param2,@param3)";
+
+
+
+			cmd.Parameters.AddWithValue("@param1",name);
+			cmd.Parameters.AddWithValue("@param2", id);
+			cmd.Parameters.AddWithValue("@param3", pw);
+			//cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
 			string welcome = id + "님 가입을 축하드립니다.";
 
 			//MessageBox.Show(cmd.CommandText);

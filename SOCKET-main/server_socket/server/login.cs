@@ -32,6 +32,7 @@ namespace server
 			Thread_CubridConnect();
 		}
 
+		public Server socNaverBlog;
 		private void login_Load(object sender, EventArgs e)
 		{
 			try
@@ -45,6 +46,7 @@ namespace server
 
 				//xml노드 dbcon 은 cubrid. xml파일로드한 것. 
 				con.dbConnectString = dbConnectString.InnerText;
+				//MessageBox.Show(con.dbConnectString);
 			}
 			catch (Exception)
 			{
@@ -59,6 +61,9 @@ namespace server
 			thTimer_DB.Change(0, 2000); //OK
 		}
 
+
+
+		object _lockobject;
 		private void DB_Connect(object sender)
 		{
 			try
@@ -68,21 +73,26 @@ namespace server
 					con.dbConn = new OdbcConnection(con.dbConnectString);
 					con.dbConn.Open();
 					con.dbOpenState = true;
-
+					if (con.dbConn.State == ConnectionState.Closed)
+						return;
 				}
 			}
 			catch (OdbcException)
 			{
-				con.dbConn.Close();
-				con.dbOpenState = false;
+				MessageBox.Show("연결 실패");
 			}
-			catch (Exception)
+			catch (Exception ex)
+			{
+				
+				MessageBox.Show("연결 실패~~~~~");
+				MessageBox.Show(ex.Message);
+				
+			}
+			finally
 			{
 				con.dbConn.Close();
-				con.dbOpenState = false;
 			}
 		}
-
 		private void btn_new_Click(object sender, EventArgs e)
 		{
 			signup signup = new signup();
@@ -91,61 +101,130 @@ namespace server
 
 		private void btn_login_Click(object sender, EventArgs e)
 		{
-			string id = textBox1.Text;
+			// 외부 입력 값 
 
-			string pw = textBox2.Text;
+			string userinput ="test";
 
-			OdbcCommand cmd = new OdbcCommand();
-			cmd.CommandType = CommandType.Text;
-			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-			int rowCnt = 0; //rowCnt 설정했음
-
-			
-			OdbcConnection conn = new OdbcConnection(con.dbConnectString);
-
-			//MessageBox.Show(cmd.CommandText);
-					DataSet dataSet = new DataSet();
+			string name ="1234";
 
 
 
+			//파라미터 바인딩을 위해 @ 을 사용한다. 외부입력 값에 의해 쿼리 구조 변경을 할 수 없다.
+
+			string query = "SELECT id,pw FROM sock_table Where id=@ProductID and pw=@ProductNAME;";
 			try
 			{
-				cmd.Connection = conn;
-				
-				if (con.dbOpenState)
+				using (var conn = con.dbConn)
 				{
-					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-					adapter.Fill(dataSet);
-					adapter.DeleteCommand = cmd;
+					using (var cmd = new OdbcCommand(query, conn))
 
-
-					//같은 id와 pw와 있는 지 돌려야지
-
-					// id는 primary key니까 중복없을 것이고
-					//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
-
-
-/*
-					if (dataSet.Tables.Count == 0)
 					{
-						MessageBox.Show("데이터 없음");
 						
-					}
-					
-					else
-					{
-						MessageBox.Show("로그인.");
-					}
-*/
+						// Param Value 추가
 
+						cmd.Parameters.AddWithValue("@ProductID", userinput);
 
+						cmd.Parameters.AddWithValue("@ProductNAME", Convert.ToInt32(name));
+
+						conn.Open();
+
+						cmd.ExecuteReader();
+
+					}
+					conn.Close();
 				}
 			}
-			catch (OdbcException)
+			catch (OdbcException ex)
 			{
-				throw;
+				MessageBox.Show(ex.Message);
 			}
+
+
 		}
 
+		/*
+					string id = textBox1.Text;
+					string pw = textBox2.Text;
+
+					OdbcCommand cmd = new OdbcCommand();
+					cmd.CommandType = CommandType.Text;
+					cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+
+
+
+					OdbcConnection conn = new OdbcConnection(con.dbConnectString);
+
+					//MessageBox.Show(cmd.CommandText);
+							DataSet dataSet = new DataSet();
+
+		*/
+
+		/*try
+		{
+			cmd.Connection = conn;
+
+			if (con.dbOpenState)  //ok
+			{
+				OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
+				adapter.Fill(dataSet);
+				adapter.DeleteCommand = cmd;
+
+				if (dataSet.Tables.Count != 0)            //ok
+				{
+					if (dataSet.Tables[0].Rows.Count > 0)     //ok
+					{
+						MessageBox.Show("로그인 되었습니다.");
+
+						while (true)  //ok
+						{
+
+							if (true)
+							{
+						cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+
+
+
+							}break;
+
+						}
+					} else
+					{
+						MessageBox.Show("아이디,비밀번호를 확인하세요");
+						return;
+					}
+
+				}
+
+				//같은 id와 pw와 있는 지 돌려야지
+
+				// id는 primary key니까 중복없을 것이고
+				//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
+
+
+
+				if (dataSet.Tables.Count == 0)
+				{
+					MessageBox.Show("데이터 없음");
+
+				}
+
+				else
+				{
+					MessageBox.Show("로그인.");
+				}
+
+
+
+			} else
+			{
+				MessageBox.Show("연결을 확인하세요");
+			}
+		}
+		catch (OdbcException)
+		{
+			MessageBox.Show("DB연결을 확인하세요");
+		}*/
 	}
+
 }
+

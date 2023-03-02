@@ -27,6 +27,8 @@ namespace client
 		{
 			InitializeComponent();
 		}
+
+	
 		private void Client_Load(object sender, EventArgs e)
 		{
 			dataSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); //왜 IP로 하지
