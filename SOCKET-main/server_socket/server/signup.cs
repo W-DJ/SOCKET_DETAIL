@@ -91,26 +91,16 @@ namespace server
 		{
 			OdbcConnection conn = new OdbcConnection(Comm.dbConnectString);
 			DataSet ds = new DataSet();
-			OdbcCommand cmd = new OdbcCommand(); // Odbc커맨드
-			cmd.CommandType = CommandType.Text; //커맨드 종류는 문자
-
 			string name = textBox1.Text;
 			string id = textBox2.Text;
 			string pw = textBox3.Text;
-
+			string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
 			
+			OdbcCommand cmd = new OdbcCommand(cmdText, conn); // Odbc커맨드
+			cmd.CommandType = CommandType.Text; //커맨드 종류는 문자
 
-			string sql = "INSERT INTO sock_table (name, id, pw) VALUES (@param1,@param2,@param3)";
 
 
-
-			cmd.Parameters.AddWithValue("@param1",name);
-			cmd.Parameters.AddWithValue("@param2", id);
-			cmd.Parameters.AddWithValue("@param3", pw);
-			//cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
-			string welcome = id + "님 가입을 축하드립니다.";
-
-			//MessageBox.Show(cmd.CommandText);
 
 
 			try
@@ -122,21 +112,50 @@ namespace server
 					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
 					adapter.Fill(ds);
 					adapter.DeleteCommand = cmd;
-					MessageBox.Show(welcome);
-					
-					
+					MessageBox.Show("welcome");
+
+
 				}
 
 
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				throw;
 			}
 
 			this.Close();
-				
-	
+		/*	using (conn)
+			{
+				conn.Open();
+
+				using (cmd)
+				{
+
+					cmd.Parameters.AddWithValue("@param1", Convert.ToInt32(name));
+					cmd.Parameters.AddWithValue("@param2", Convert.ToInt32(id));
+					cmd.Parameters.AddWithValue("@param3", Convert.ToInt32(pw));
+
+					cmd.ExecuteReader();
+				}
+
+
+			}*/
+
+			cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
+
+
+
+
+
+
+
+			string welcome = id + "님 가입을 축하드립니다.";
+			//MessageBox.Show(cmd.CommandText);
+
+
+
+
 		}
 
 

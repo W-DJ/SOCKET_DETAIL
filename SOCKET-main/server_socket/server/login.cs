@@ -25,11 +25,12 @@ namespace server
 
 		}
 
-		public cubridConn con = new cubridConn();
+		public cubridConn _serverComm = new cubridConn();
 		public login()
 		{
 			InitializeComponent();
-			Thread_CubridConnect();
+			//Thread_CubridConnect();
+			
 		}
 
 		public Server socNaverBlog;
@@ -38,33 +39,30 @@ namespace server
 			try
 			{
 				//xml 주소 
-				con.xmlConfig = new XmlDocument();
-				con.xmlConfig.Load(Application.StartupPath + "/login.xml"); // xml파일을 로드(시작점은 login.xml 파일로 부터)
+				_serverComm.xmlConfig = new XmlDocument();
+				_serverComm.xmlConfig.Load(Application.StartupPath + "/login.xml"); // xml파일을 로드(시작점은 login.xml 파일로 부터)
 
 				// database
-				XmlNode dbConnectString = con.xmlConfig.SelectSingleNode("/DB_Connect");
+				XmlNode dbConnectString = _serverComm.xmlConfig.SelectSingleNode("/DB_Connect");
 
 				//xml노드 dbcon 은 cubrid. xml파일로드한 것. 
-				con.dbConnectString = dbConnectString.InnerText;
-				//MessageBox.Show(con.dbConnectString);
+				_serverComm.dbConnectString = dbConnectString.InnerText;
+				_serverComm.dbOpenState = true;
+				//MessageBox.Show(_serverComm.dbConnectString + "안녕하세요");
 			}
-			catch (Exception)
-			{
+			catch (Exception) { 
+			
 
 				MessageBox.Show("실행 파일 에러. 관리자에게 문의하세요.");
 			}
 		}
 
-		private void Thread_CubridConnect()
-		{
-			System.Threading.Timer thTimer_DB = new System.Threading.Timer(DB_Connect);
-			thTimer_DB.Change(0, 2000); //OK
-		}
+	
 
 
 
 		object _lockobject;
-		private void DB_Connect(object sender)
+		/*private void DB_Connect(object sender)
 		{
 			try
 			{
@@ -92,41 +90,82 @@ namespace server
 			{
 				con.dbConn.Close();
 			}
-		}
+		}*/
 		private void btn_new_Click(object sender, EventArgs e)
 		{
 			signup signup = new signup();
 			signup.ShowDialog();
 		}
 
+		
+
 		private void btn_login_Click(object sender, EventArgs e)
 		{
 			// 외부 입력 값 
 
-			string userinput ="test";
+			string usrinput = "ID";
 
-			string name ="1234";
+			string name = "NAME";
 
 
 
 			//파라미터 바인딩을 위해 @ 을 사용한다. 외부입력 값에 의해 쿼리 구조 변경을 할 수 없다.
 
-			string query = "SELECT id,pw FROM sock_table Where id=@ProductID and pw=@ProductNAME;";
+			string query = "SELECT * FROM sock_table Where id = @ProductID and pw = @ProductNAME;";
+
+			using (var conn = new OdbcConnection(_serverComm.dbConnectString))
+
+			{
+
+				// 연결Open
+
+				conn.Open();
+
+				using (var cmd = new OdbcCommand(query, conn))
+
+				{
+
+					// Param Value 추가
+
+					cmd.Parameters.AddWithValue("@ProductID", usrinput);
+
+					cmd.Parameters.AddWithValue("@ProductNAME", name);
+
+					cmd.ExecuteReader();
+
+				}
+
+			}
+		}
+
+		/*private void btn_login_Click(object sender, EventArgs e)
+		{
+			// 외부 입력 값 
+
+			string usrinput ="ID";
+
+			string name ="NAME";
+
+
+
+			//파라미터 바인딩을 위해 @ 을 사용한다. 외부입력 값에 의해 쿼리 구조 변경을 할 수 없다.
+
+			string query = "SELECT * FROM sock_table Where id=@ProductID and pw=@ProductNAME;";
 			try
 			{
-				using (var conn = con.dbConn)
+				using (var conn = _serverComm.dbConn)
 				{
+						conn.Open();
 					using (var cmd = new OdbcCommand(query, conn))
 
 					{
 						
 						// Param Value 추가
 
-						cmd.Parameters.AddWithValue("@ProductID", userinput);
+						cmd.Parameters.AddWithValue("@ProductID", usrinput);
 
-						cmd.Parameters.AddWithValue("@ProductNAME", Convert.ToInt32(name));
+						cmd.Parameters.AddWithValue("@ProductNAME", name);
 
-						conn.Open();
 
 						cmd.ExecuteReader();
 
@@ -141,6 +180,7 @@ namespace server
 
 
 		}
+*/
 
 		/*
 					string id = textBox1.Text;

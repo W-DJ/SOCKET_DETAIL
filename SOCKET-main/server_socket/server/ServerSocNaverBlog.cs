@@ -27,6 +27,10 @@ namespace server
 		private bool isServerOpen; // Close 변수
 		private bool isOpen;
 
+
+
+
+
 		public Server()
 		{
 			InitializeComponent();
