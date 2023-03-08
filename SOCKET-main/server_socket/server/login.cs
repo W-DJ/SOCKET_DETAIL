@@ -29,8 +29,8 @@ namespace server
 		public login()
 		{
 			InitializeComponent();
-			//Thread_CubridConnect();
-			
+			Thread_CubridConnect();
+
 		}
 
 		public Server socNaverBlog;
@@ -47,223 +47,155 @@ namespace server
 
 				//xml노드 dbcon 은 cubrid. xml파일로드한 것. 
 				_serverComm.dbConnectString = dbConnectString.InnerText;
-				_serverComm.dbOpenState = true;
+
 				//MessageBox.Show(_serverComm.dbConnectString + "안녕하세요");
 			}
-			catch (Exception) { 
-			
+			catch (Exception)
+			{
+
 
 				MessageBox.Show("실행 파일 에러. 관리자에게 문의하세요.");
 			}
 		}
 
-	
+		private void Thread_CubridConnect()
+		{
+			System.Threading.Timer timerDB = new System.Threading.Timer(DB_Connect);
+			//DB 컨넥트를 만들어주자.
+			timerDB.Change(0, 2000); //OK
+		}
 
 
 
 		object _lockobject;
-		/*private void DB_Connect(object sender)
+		private void DB_Connect(object sender)
 		{
 			try
 			{
-				if (!con.dbOpenState)
+				if (!_serverComm.dbOpenState)
 				{
-					con.dbConn = new OdbcConnection(con.dbConnectString);
-					con.dbConn.Open();
-					con.dbOpenState = true;
-					if (con.dbConn.State == ConnectionState.Closed)
+					_serverComm.dbConn = new OdbcConnection(_serverComm.dbConnectString);
+					//MessageBox.Show(_serverComm.dbConnectString);
+					_serverComm.dbConn.Open();
+					_serverComm.dbOpenState = true;
+					if (_serverComm.dbConn.State == ConnectionState.Closed)
 						return;
 				}
 			}
 			catch (OdbcException)
 			{
-				MessageBox.Show("연결 실패");
 			}
 			catch (Exception ex)
 			{
 				
-				MessageBox.Show("연결 실패~~~~~");
-				MessageBox.Show(ex.Message);
-				
 			}
 			finally
 			{
-				con.dbConn.Close();
+				_serverComm.dbConn.Close();
 			}
-		}*/
+		}
 		private void btn_new_Click(object sender, EventArgs e)
 		{
 			signup signup = new signup();
 			signup.ShowDialog();
 		}
 
-		
+
+
+
 
 		private void btn_login_Click(object sender, EventArgs e)
 		{
-			// 외부 입력 값 
+			string id = textBox1.Text;
+			string pw = textBox2.Text;
 
-			string usrinput = "ID";
-
-			string name = "NAME";
-
-
-
-			//파라미터 바인딩을 위해 @ 을 사용한다. 외부입력 값에 의해 쿼리 구조 변경을 할 수 없다.
-
-			string query = "SELECT * FROM sock_table Where id = @ProductID and pw = @ProductNAME;";
-
-			using (var conn = new OdbcConnection(_serverComm.dbConnectString))
-
-			{
-
-				// 연결Open
-
-				conn.Open();
-
-				using (var cmd = new OdbcCommand(query, conn))
-
-				{
-
-					// Param Value 추가
-
-					cmd.Parameters.AddWithValue("@ProductID", usrinput);
-
-					cmd.Parameters.AddWithValue("@ProductNAME", name);
-
-					cmd.ExecuteReader();
-
-				}
-
-			}
-		}
-
-		/*private void btn_login_Click(object sender, EventArgs e)
-		{
-			// 외부 입력 값 
-
-			string usrinput ="ID";
-
-			string name ="NAME";
+			OdbcCommand cmd = new OdbcCommand();
+			cmd.CommandType = CommandType.Text;
+			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 
 
 
-			//파라미터 바인딩을 위해 @ 을 사용한다. 외부입력 값에 의해 쿼리 구조 변경을 할 수 없다.
+			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
 
-			string query = "SELECT * FROM sock_table Where id=@ProductID and pw=@ProductNAME;";
+			//MessageBox.Show(cmd.CommandText);
+			DataSet dataSet = new DataSet();
+
+
+
 			try
 			{
-				using (var conn = _serverComm.dbConn)
+				cmd.Connection = conn;
+
+				if (_serverComm.dbOpenState)  //ok
 				{
-						conn.Open();
-					using (var cmd = new OdbcCommand(query, conn))
+					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
+					adapter.Fill(dataSet);
+					adapter.DeleteCommand = cmd;
 
+					if (dataSet.Tables.Count != 0)            //ok
 					{
-						
-						// Param Value 추가
-
-						cmd.Parameters.AddWithValue("@ProductID", usrinput);
-
-						cmd.Parameters.AddWithValue("@ProductNAME", name);
-
-
-						cmd.ExecuteReader();
-
-					}
-					conn.Close();
-				}
-			}
-			catch (OdbcException ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
-
-
-		}
-*/
-
-		/*
-					string id = textBox1.Text;
-					string pw = textBox2.Text;
-
-					OdbcCommand cmd = new OdbcCommand();
-					cmd.CommandType = CommandType.Text;
-					cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-
-
-
-					OdbcConnection conn = new OdbcConnection(con.dbConnectString);
-
-					//MessageBox.Show(cmd.CommandText);
-							DataSet dataSet = new DataSet();
-
-		*/
-
-		/*try
-		{
-			cmd.Connection = conn;
-
-			if (con.dbOpenState)  //ok
-			{
-				OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-				adapter.Fill(dataSet);
-				adapter.DeleteCommand = cmd;
-
-				if (dataSet.Tables.Count != 0)            //ok
-				{
-					if (dataSet.Tables[0].Rows.Count > 0)     //ok
-					{
-						MessageBox.Show("로그인 되었습니다.");
-
-						while (true)  //ok
+						if (dataSet.Tables[0].Rows.Count > 0)     //ok
 						{
+							MessageBox.Show("로그인 되었습니다.");
 
-							if (true)
+							while (true)  //ok
 							{
-						cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+
+								if (true)
+								{
+									cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 
 
 
-							}break;
+								}
+								break;
 
+							}
 						}
-					} else
-					{
-						MessageBox.Show("아이디,비밀번호를 확인하세요");
-						return;
+						else
+						{
+							MessageBox.Show("아이디,비밀번호를 확인하세요");
+							return;
+						}
+
 					}
 
+					//같은 id와 pw와 있는 지 돌려야지
+
+					// id는 primary key니까 중복없을 것이고
+					//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
+
+
+
+					if (dataSet.Tables.Count == 0)
+					{
+						MessageBox.Show("데이터 없음");
+
+					}
+
+					else
+					{
+						Server serverSoc = new Server();
+						serverSoc.ShowDialog();
+						
+					}
+
+
+
 				}
-
-				//같은 id와 pw와 있는 지 돌려야지
-
-				// id는 primary key니까 중복없을 것이고
-				//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
-
-
-
-				if (dataSet.Tables.Count == 0)
-				{
-					MessageBox.Show("데이터 없음");
-
-				}
-
 				else
 				{
-					MessageBox.Show("로그인.");
+					MessageBox.Show("연결을 확인하세요");
 				}
-
-
-
-			} else
+			}
+			catch (OdbcException)
 			{
-				MessageBox.Show("연결을 확인하세요");
+				MessageBox.Show("DB연결을 확인하세요");
 			}
 		}
-		catch (OdbcException)
-		{
-			MessageBox.Show("DB연결을 확인하세요");
-		}*/
+
+
+
 	}
 
 }
