@@ -109,89 +109,111 @@ namespace server
 			string id = textBox1.Text;
 			string pw = textBox2.Text;
 
-			OdbcCommand cmd = new OdbcCommand();
-			cmd.CommandType = CommandType.Text;
-			cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-
-
-
+			//OdbcCommand cmd = new OdbcCommand();
+			//cmd.CommandType = CommandType.Text;
+			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id=@id and pw=@pw";
+			//string query = "SELECT id,pw FROM sock_table WHERE id=@id and pw=@pw";
+			string query = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
-
-			//MessageBox.Show(cmd.CommandText);
-			DataSet dataSet = new DataSet();
-
-
-
-			try
+			using (conn)
 			{
-				cmd.Connection = conn;
-
-				if (_serverComm.dbOpenState)  //ok
+				using (var cmd = new OdbcCommand(query,conn))
 				{
-					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-					adapter.Fill(dataSet);
-					adapter.DeleteCommand = cmd;
+					// Param Value 추가
 
-					if (dataSet.Tables.Count != 0)            //ok
+					cmd.Parameters.AddWithValue("@ProductID", id);
+
+					cmd.Parameters.AddWithValue("@ProductNAME", pw);
+
+					conn.Open();
+
+					cmd.ExecuteReader();
+
+					conn.Close();
+					DataSet dataSet = new DataSet();
+
+
+
+					try
 					{
-						if (dataSet.Tables[0].Rows.Count > 0)     //ok
+						cmd.Connection = conn;
+
+						if (_serverComm.dbOpenState)  //ok
 						{
-							MessageBox.Show("로그인 되었습니다.");
+							OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
+							adapter.Fill(dataSet);
+				
+							adapter.DeleteCommand = cmd;
 
-							while (true)  //ok
+							if (dataSet.Tables.Count != 0)            //ok
 							{
-
-								if (true)
+								if (dataSet.Tables[0].Rows.Count > 0)     //ok
 								{
-									cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+									MessageBox.Show("로그인 되었습니다.");
+
+									while (true)  //ok
+									{
+
+										if (true)
+										{
+											cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 
 
 
+										}
+										break;
+
+									}
 								}
-								break;
+								else
+								{
+									MessageBox.Show("아이디,비밀번호를 확인하세요");
+									return;
+								}
 
 							}
+
+							//같은 id와 pw와 있는 지 돌려야지
+
+							// id는 primary key니까 중복없을 것이고
+							//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
+
+
+
+							if (dataSet.Tables.Count == 0)
+							{
+								MessageBox.Show("데이터 없음");
+
+							}
+
+							else
+							{
+								Server serverSoc = new Server();
+								serverSoc.ShowDialog();
+
+							}
+
+
+
 						}
 						else
 						{
-							MessageBox.Show("아이디,비밀번호를 확인하세요");
-							return;
+							MessageBox.Show("연결을 확인하세요");
 						}
-
 					}
-
-					//같은 id와 pw와 있는 지 돌려야지
-
-					// id는 primary key니까 중복없을 것이고
-					//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
-
-
-
-					if (dataSet.Tables.Count == 0)
+					catch (OdbcException)
 					{
-						MessageBox.Show("데이터 없음");
-
+						MessageBox.Show("DB연결을 확인하세요");
 					}
-
-					else
-					{
-						Server serverSoc = new Server();
-						serverSoc.ShowDialog();
-						
-					}
-
-
-
-				}
-				else
-				{
-					MessageBox.Show("연결을 확인하세요");
 				}
 			}
-			catch (OdbcException)
-			{
-				MessageBox.Show("DB연결을 확인하세요");
-			}
+
+
+			
+
+			//MessageBox.Show(cmd.CommandText);
+			
 		}
 
 
