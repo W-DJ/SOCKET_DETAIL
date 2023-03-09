@@ -105,8 +105,8 @@ namespace server
 			string id = textBox1.Text;
 			string pw = textBox2.Text;
 
-			string usrinput = textBox1.Text;
-			string name = textBox2.Text;
+			string usrinput = "ID";
+			string name = "NAME";
 
 			//OdbcCommand cmd = new OdbcCommand();
 			//cmd.CommandType = CommandType.Text;
