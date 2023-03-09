@@ -87,7 +87,7 @@ namespace server
 			}
 			catch (Exception ex)
 			{
-				
+
 			}
 			finally
 			{
@@ -100,40 +100,38 @@ namespace server
 			signup.ShowDialog();
 		}
 
-
-
-
-
 		private void btn_login_Click(object sender, EventArgs e)
 		{
 			string id = textBox1.Text;
 			string pw = textBox2.Text;
 
+			string usrinput = textBox1.Text;
+			string name = textBox2.Text;
+
 			//OdbcCommand cmd = new OdbcCommand();
 			//cmd.CommandType = CommandType.Text;
 			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id=@id and pw=@pw";
-			//string query = "SELECT id,pw FROM sock_table WHERE id=@id and pw=@pw";
-			string query = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
+
+
+			string query = "SELECT * FROM sock_table WHERE id=@ProductID and pw=@ProductNAME";
+			//string query = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
 			using (conn)
 			{
-				using (var cmd = new OdbcCommand(query,conn))
+				conn.Open();
+				using (var cmd = new OdbcCommand(query, conn))
 				{
 					// Param Value 추가
 
-					cmd.Parameters.AddWithValue("@ProductID", id);
-
-					cmd.Parameters.AddWithValue("@ProductNAME", pw);
-
-					conn.Open();
+					cmd.Parameters.AddWithValue("@ProductID", usrinput);
+					cmd.Parameters.AddWithValue("@ProductNAME", name);
 
 					cmd.ExecuteReader();
 
 					conn.Close();
+
 					DataSet dataSet = new DataSet();
-
-
 
 					try
 					{
@@ -143,7 +141,7 @@ namespace server
 						{
 							OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
 							adapter.Fill(dataSet);
-				
+
 							adapter.DeleteCommand = cmd;
 
 							if (dataSet.Tables.Count != 0)            //ok
@@ -157,13 +155,9 @@ namespace server
 
 										if (true)
 										{
-											cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-
-
-
+											//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = ?&& pw = ?;";
 										}
 										break;
-
 									}
 								}
 								else
@@ -171,7 +165,6 @@ namespace server
 									MessageBox.Show("아이디,비밀번호를 확인하세요");
 									return;
 								}
-
 							}
 
 							//같은 id와 pw와 있는 지 돌려야지
@@ -193,9 +186,6 @@ namespace server
 								serverSoc.ShowDialog();
 
 							}
-
-
-
 						}
 						else
 						{
@@ -208,17 +198,8 @@ namespace server
 					}
 				}
 			}
-
-
-			
-
 			//MessageBox.Show(cmd.CommandText);
-			
 		}
-
-
-
 	}
-
 }
 
