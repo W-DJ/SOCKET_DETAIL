@@ -111,27 +111,31 @@ namespace server
 			//OdbcCommand cmd = new OdbcCommand();
 			//cmd.CommandType = CommandType.Text;
 			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id=@id and pw=@pw";
+			string query = "SELECT * FROM sock_table WHERE id=@id and pw=@pw;";
 
 
-			string query = "SELECT * FROM sock_table WHERE id=@ProductID and pw=@ProductNAME";
+			//string query = "SELECT * FROM sock_table WHERE id=? and pw=?";
 			//string query = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
 			using (conn)
 			{
 				conn.Open();
+
 				using (var cmd = new OdbcCommand(query, conn))
 				{
 					// Param Value 추가
 
-					cmd.Parameters.AddWithValue("@ProductID", usrinput);
-					cmd.Parameters.AddWithValue("@ProductNAME", name);
+					cmd.Parameters.AddWithValue("@id", Convert.ToInt32(usrinput));
+
+					cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(name));
 
 					cmd.ExecuteReader();
 
-					conn.Close();
+					MessageBox.Show(query);
 
 					DataSet dataSet = new DataSet();
+					Server serverSoc = new Server();
+					
 
 					try
 					{
@@ -149,10 +153,12 @@ namespace server
 								if (dataSet.Tables[0].Rows.Count > 0)     //ok
 								{
 									MessageBox.Show("로그인 되었습니다.");
+									serverSoc.ShowDialog();
+									
+									
 
 									while (true)  //ok
 									{
-
 										if (true)
 										{
 											//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = ?&& pw = ?;";
@@ -166,26 +172,16 @@ namespace server
 									return;
 								}
 							}
-
 							//같은 id와 pw와 있는 지 돌려야지
 
 							// id는 primary key니까 중복없을 것이고
 							//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
 
-
-
 							if (dataSet.Tables.Count == 0)
 							{
 								MessageBox.Show("데이터 없음");
-
 							}
-
-							else
-							{
-								Server serverSoc = new Server();
-								serverSoc.ShowDialog();
-
-							}
+						
 						}
 						else
 						{
