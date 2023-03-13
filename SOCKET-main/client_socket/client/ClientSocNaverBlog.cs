@@ -151,18 +151,28 @@ namespace client
 			MySqlConnection conn= new MySqlConnection(conn_string);
 			MySqlCommand cmd = conn.CreateCommand();
 
-			string name = "client";
-			string chat = textBox3.Text;
-			
+			string NAM = "client";
+			string CHAT = textBox3.Text;
 
-			string sql_makedb = "INSERT INTO sock(name,chat) VALUES"+ "('"+name+"','"+chat+"');";
+
+			//string sql_makedb = "INSERT INTO sock (name,chat) VALUES"+"('"+NAM+"','"+CHAT+"');";  //①
+			//string sql_makedb = "INSERT INTO sock (name,chat) VALUES (?,?);"; //②
+			string sql_makedb = "INSERT INTO sock (name,chat) VALUES (@name,@chat);"; //③
+
 			//MessageBox.Show(sql_makedb);
 			cmd.CommandText = sql_makedb;
+		
 
 			try
 			{
 				conn.Open();
 
+				cmd.Parameters.AddWithValue("@name", NAM); //②
+				cmd.Parameters.AddWithValue("@chat", CHAT); //②
+
+			cmd.ExecuteNonQuery();
+
+				conn.Close();
 			}
 			catch (Exception)
 			{
@@ -179,7 +189,6 @@ namespace client
 			
 			//MySqlCommand cmd = new MySqlCommand(sql_makedb, conn);
 
-			cmd.ExecuteNonQuery();
 			
 			
 		}
