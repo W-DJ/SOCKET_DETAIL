@@ -106,8 +106,8 @@ namespace server
 			string id = textBox1.Text; //①,②
 			string pw = textBox2.Text; //①,②
 
-			////////string usrinput = "ID";//③
-			////////string name = "NAME";//③
+			string userID = textBox1.Text;//③
+			string userPW = textBox2.Text;//③
 
 			//OdbcCommand cmd = new OdbcCommand();
 
@@ -117,9 +117,43 @@ namespace server
 
 			//string query = "SELECT * FROM sock_table WHERE id=? and pw=?"; //①
 
-			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
+			string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?";
+			//string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
+			//OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
 
-			using (conn)//①,②
+			using (var connect = new OdbcConnection(_serverComm.dbConnectString))
+			{
+
+				try
+				{
+					connect.Open(); //연결
+
+					using (var command = new OdbcCommand(sql_cub_sel, connect))
+					{
+						command.Parameters.AddWithValue("@id", userID);
+						command.Parameters.AddWithValue("@pw", userPW);
+
+						command.ExecuteNonQuery();
+
+						connect.Close();
+					}
+
+					MessageBox.Show(userID + "로그인 완료");
+				}
+				catch (Exception)
+				{
+
+					throw;
+				}
+
+			}
+
+
+
+
+
+
+			/*using (conn)//①,②
 			{
 				conn.Open();//①,②
 
@@ -208,7 +242,7 @@ namespace server
 
 					conn.Close();
 				}
-			}
+			}*/
 			//MessageBox.Show(cmd.CommandText);
 		}
 	}

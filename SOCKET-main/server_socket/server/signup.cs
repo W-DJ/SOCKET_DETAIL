@@ -91,57 +91,74 @@ namespace server
 		private void signbtn_Click(object sender, EventArgs e)
 		{
 
-			conn = new OdbcConnection(Comm.dbConnectString);
 			
 			DataSet ds = new DataSet();
+			
+			
 			string name = textBox1.Text;
 			string id = textBox2.Text;
 			string pw = textBox3.Text;
-			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
 
-			string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (?,?,?);";
-			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (@name,@id,@pw);";
+			string uNAME = textBox1.Text;
+			string uID = textBox2.Text;
+			string uPW = textBox3.Text;
 
+
+			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');"; //①
+			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (?,?,?);"; //②
+			string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (@name,@id,@pw);"; //③
+
+			conn = new OdbcConnection(Comm.dbConnectString);
 			OdbcCommand cmd = new OdbcCommand(cmdText, conn); // Odbc커맨드
+			
 
-			cmd.CommandType = CommandType.Text; //커맨드 종류는 문자
-
+			cmd.CommandType = CommandType.Text; //커맨드 종류는 문자  //①,②
+			cmd.CommandText = cmdText; //③
 
 			try
 			{
 				//cmd.Connection = conn;  // Odbc커맨드 객체 cmd.연결 = conn(xml값)
+				conn.Open(); //③
+				
+				
+				cmd.Parameters.AddWithValue("@name",uNAME);
+				cmd.Parameters.AddWithValue("@id", uID);
+				cmd.Parameters.AddWithValue("@pw", uPW);
 
-				if (Comm.dbOpenState)
+				cmd.ExecuteNonQuery();
+
+				conn.Close();
+				/*if (Comm.dbOpenState) //①,②
 				{
-					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-					using (conn)
+					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd); //①,②
+					using (conn) //①,②
 					{
-						conn.Open();
+						conn.Open(); //①,②
 
-						using (cmd)
+						using (cmd) //①,②
 						{
 							//adapter.SelectCommand= cmd;
 							//cmd.Parameters.AddWithValue("@name", Convert.ToInt32(name));
 							//cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id));
 							//cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(pw));
-							cmd.Parameters.AddWithValue("@name",name);
-							cmd.Parameters.AddWithValue("@id", id);
-							cmd.Parameters.AddWithValue("@pw", pw);
+							cmd.Parameters.AddWithValue("@name",name);  //①,②
+							cmd.Parameters.AddWithValue("@id", id); //①,②
+							cmd.Parameters.AddWithValue("@pw", pw); //①,②
 
-							
-					adapter.Fill(ds);
-						
+
+							adapter.Fill(ds); //①,②,③
+
 
 							//cmd.ExecuteReader();
 						}
-						conn.Close();
+						conn.Close(); //①,②,③
 
 					}
 				
-					MessageBox.Show("welcome");
+					MessageBox.Show("welcome"); //①,②,③
 
 
-				}
+				}*/
 
 
 			}
