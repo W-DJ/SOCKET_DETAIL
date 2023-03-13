@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -105,18 +106,19 @@ namespace server
 			string id = textBox1.Text;
 			string pw = textBox2.Text;
 
-			string usrinput = "ID";
-			string name = "NAME";
+			////////string usrinput = "ID";
+			////////string name = "NAME";
 
 			//OdbcCommand cmd = new OdbcCommand();
+
 			//cmd.CommandType = CommandType.Text;
+
 			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
-			string query = "SELECT * FROM sock_table WHERE id=@id and pw=@pw;";
 
+			string query = "SELECT * FROM sock_table WHERE id=? and pw=?";
 
-			//string query = "SELECT * FROM sock_table WHERE id=? and pw=?";
-			//string query = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
+
 			using (conn)
 			{
 				conn.Open();
@@ -125,17 +127,26 @@ namespace server
 				{
 					// Param Value 추가
 
-					cmd.Parameters.AddWithValue("@id", Convert.ToInt32(usrinput));
+					/////////cmd.Parameters.AddWithValue("@id", Convert.ToInt32(usrinput));
 
-					cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(name));
+					/////////cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(name));
+
+					
+					cmd.Parameters.AddWithValue("@id", Convert.ToString(id));
+			
+					cmd.Parameters.AddWithValue("@pw", Convert.ToString(pw));
+
+			
 
 					cmd.ExecuteReader();
 
-					MessageBox.Show(query);
+				
 
 					DataSet dataSet = new DataSet();
 					Server serverSoc = new Server();
-					
+
+					OdbcDataAdapter adapter = new OdbcDataAdapter(); //odbcdataAdapter는 서버에서 데이터를 가져온뒤 연결 끊음
+
 
 					try
 					{
@@ -143,8 +154,10 @@ namespace server
 
 						if (_serverComm.dbOpenState)  //ok
 						{
-							OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
-							adapter.Fill(dataSet);
+							adapter.SelectCommand = cmd;
+							
+					conn.Close();
+							adapter.Fill(dataSet); // adapter에게 채운다. (dataSet)을.
 
 							adapter.DeleteCommand = cmd;
 
@@ -154,8 +167,8 @@ namespace server
 								{
 									MessageBox.Show("로그인 되었습니다.");
 									serverSoc.ShowDialog();
-									
-									
+
+
 
 									while (true)  //ok
 									{
@@ -181,7 +194,7 @@ namespace server
 							{
 								MessageBox.Show("데이터 없음");
 							}
-						
+
 						}
 						else
 						{
@@ -192,6 +205,8 @@ namespace server
 					{
 						MessageBox.Show("DB연결을 확인하세요");
 					}
+
+					conn.Close();
 				}
 			}
 			//MessageBox.Show(cmd.CommandText);

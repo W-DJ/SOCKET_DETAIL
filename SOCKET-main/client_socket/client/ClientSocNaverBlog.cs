@@ -135,6 +135,10 @@ namespace client
 			//MessageBox.Show("보낸 메시지 : " + msg);
 			listChat.Items.Add(" 회원 : " + msg);
 
+				DBTest();
+
+				textBox3.Clear();
+
 				
 			
 			}
@@ -145,7 +149,7 @@ namespace client
 		{
 			string conn_string = "Server=10.10.10.60;Port=3306;Database=test;Uid=root;Pwd=ansetech";
 			MySqlConnection conn= new MySqlConnection(conn_string);
-			//MySqlCommand cmd = conn.CreateCommand();
+			MySqlCommand cmd = conn.CreateCommand();
 
 			string name = "client";
 			string chat = textBox3.Text;
@@ -153,7 +157,7 @@ namespace client
 
 			string sql_makedb = "INSERT INTO sock(name,chat) VALUES"+ "('"+name+"','"+chat+"');";
 			//MessageBox.Show(sql_makedb);
-			//cmd.CommandText = sql_makedb;
+			cmd.CommandText = sql_makedb;
 
 			try
 			{
@@ -173,7 +177,7 @@ namespace client
 				MessageBox.Show(reader["id"].ToString()); // 메시지박스로 읽은 id 컬럼을 출력한다.
 			}*/
 			
-			MySqlCommand cmd = new MySqlCommand(sql_makedb, conn);
+			//MySqlCommand cmd = new MySqlCommand(sql_makedb, conn);
 
 			cmd.ExecuteNonQuery();
 			

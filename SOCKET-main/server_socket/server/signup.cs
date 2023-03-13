@@ -87,31 +87,57 @@ namespace server
 			}
 		}
 		//DB 연결 준비 끝
+			OdbcConnection conn;
 		private void signbtn_Click(object sender, EventArgs e)
 		{
-			OdbcConnection conn = new OdbcConnection(Comm.dbConnectString);
+
+			conn = new OdbcConnection(Comm.dbConnectString);
+			
 			DataSet ds = new DataSet();
 			string name = textBox1.Text;
 			string id = textBox2.Text;
 			string pw = textBox3.Text;
-			string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
-			
+			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
+
+			string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (?,?,?);";
+			//string cmdText = "INSERT INTO sock_table (name, id, pw) VALUES (@name,@id,@pw);";
+
 			OdbcCommand cmd = new OdbcCommand(cmdText, conn); // Odbc커맨드
+
 			cmd.CommandType = CommandType.Text; //커맨드 종류는 문자
-
-
-
 
 
 			try
 			{
-				cmd.Connection = conn;  // Odbc커맨드 객체 cmd.연결 = conn(xml값)
+				//cmd.Connection = conn;  // Odbc커맨드 객체 cmd.연결 = conn(xml값)
 
 				if (Comm.dbOpenState)
 				{
 					OdbcDataAdapter adapter = new OdbcDataAdapter(cmd);
+					using (conn)
+					{
+						conn.Open();
+
+						using (cmd)
+						{
+							//adapter.SelectCommand= cmd;
+							//cmd.Parameters.AddWithValue("@name", Convert.ToInt32(name));
+							//cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id));
+							//cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(pw));
+							cmd.Parameters.AddWithValue("@name",name);
+							cmd.Parameters.AddWithValue("@id", id);
+							cmd.Parameters.AddWithValue("@pw", pw);
+
+							
 					adapter.Fill(ds);
-					adapter.DeleteCommand = cmd;
+						
+
+							//cmd.ExecuteReader();
+						}
+						conn.Close();
+
+					}
+				
 					MessageBox.Show("welcome");
 
 
@@ -125,24 +151,8 @@ namespace server
 			}
 
 			this.Close();
-		/*	using (conn)
-			{
-				conn.Open();
 
-				using (cmd)
-				{
-
-					cmd.Parameters.AddWithValue("@param1", Convert.ToInt32(name));
-					cmd.Parameters.AddWithValue("@param2", Convert.ToInt32(id));
-					cmd.Parameters.AddWithValue("@param3", Convert.ToInt32(pw));
-
-					cmd.ExecuteReader();
-				}
-
-
-			}*/
-
-			cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
+			//cmd.CommandText = "INSERT INTO sock_table (name, id, pw) VALUES " + "('" + name + "','" + id + "','" + pw + "');";
 
 
 
