@@ -103,11 +103,11 @@ namespace server
 
 		private void btn_login_Click(object sender, EventArgs e)
 		{
-			string id = textBox1.Text;
-			string pw = textBox2.Text;
+			string id = textBox1.Text; //①,②
+			string pw = textBox2.Text; //①,②
 
-			////////string usrinput = "ID";
-			////////string name = "NAME";
+			////////string usrinput = "ID";//③
+			////////string name = "NAME";//③
 
 			//OdbcCommand cmd = new OdbcCommand();
 
@@ -115,40 +115,40 @@ namespace server
 
 			//cmd.CommandText = "SELECT id,pw FROM sock_table WHERE id = '" + id + "'&& pw = '" + pw + "';";
 
-			string query = "SELECT * FROM sock_table WHERE id=? and pw=?";
+			//string query = "SELECT * FROM sock_table WHERE id=? and pw=?"; //①
 
-			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);
+			OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
 
-			using (conn)
+			using (conn)//①,②
 			{
-				conn.Open();
+				conn.Open();//①,②
 
-				using (var cmd = new OdbcCommand(query, conn))
+				using (var cmd = new OdbcCommand(query, conn))//①,②
 				{
 					// Param Value 추가
 
-					/////////cmd.Parameters.AddWithValue("@id", Convert.ToInt32(usrinput));
+					/////////cmd.Parameters.AddWithValue("@id", Convert.ToInt32(usrinput));//③
 
-					/////////cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(name));
-
-					
-					cmd.Parameters.AddWithValue("@id", Convert.ToString(id));
-			
-					cmd.Parameters.AddWithValue("@pw", Convert.ToString(pw));
-
-			
-
-					cmd.ExecuteReader();
-
-				
-
-					DataSet dataSet = new DataSet();
-					Server serverSoc = new Server();
-
-					OdbcDataAdapter adapter = new OdbcDataAdapter(); //odbcdataAdapter는 서버에서 데이터를 가져온뒤 연결 끊음
+					/////////cmd.Parameters.AddWithValue("@pw", Convert.ToInt32(name));//③
 
 
-					try
+					cmd.Parameters.AddWithValue("@id", Convert.ToString(id));//①,②
+
+					cmd.Parameters.AddWithValue("@pw", Convert.ToString(pw));//①,②
+
+
+
+					cmd.ExecuteReader();//①,②
+
+
+
+					DataSet dataSet = new DataSet();//①,②
+					Server serverSoc = new Server();//①,②
+
+					OdbcDataAdapter adapter = new OdbcDataAdapter(); //①//odbcdataAdapter는 서버에서 데이터를 가져온뒤 연결 끊음
+
+
+					try//①,②
 					{
 						cmd.Connection = conn;
 
