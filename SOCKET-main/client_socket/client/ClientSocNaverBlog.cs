@@ -167,10 +167,10 @@ namespace client
 			{
 				conn.Open();
 
-				cmd.Parameters.AddWithValue("@name", NAM); //②
-				cmd.Parameters.AddWithValue("@chat", CHAT); //②
+				cmd.Parameters.AddWithValue("@name", NAM); //②,③
+				cmd.Parameters.AddWithValue("@chat", CHAT); //②,③
 
-			cmd.ExecuteNonQuery();
+				cmd.ExecuteNonQuery();
 
 				conn.Close();
 			}

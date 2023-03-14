@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace server
 
 
 
-		object _lockobject;
+		//object _lockobject;
 		private void DB_Connect(object sender)
 		{
 			try
@@ -86,7 +87,7 @@ namespace server
 			catch (OdbcException)
 			{
 			}
-			catch (Exception ex)
+			catch (Exception )
 			{
 
 			}
@@ -95,12 +96,12 @@ namespace server
 				_serverComm.dbConn.Close();
 			}
 		}
+			signup signup = new signup();
 		private void btn_new_Click(object sender, EventArgs e)
 		{
-			signup signup = new signup();
 			signup.ShowDialog();
 		}
-
+		Server serverSoc = new Server();
 		private void btn_login_Click(object sender, EventArgs e)
 		{
 			string id = textBox1.Text; //①,②
@@ -117,7 +118,13 @@ namespace server
 
 			//string query = "SELECT * FROM sock_table WHERE id=? and pw=?"; //①
 
-			string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?";
+			//string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //③
+
+            string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //④
+			OdbcParameter idParam = new OdbcParameter("@id", userID);
+			idParam.Value = textBox1.Text;
+			OdbcParameter pwParam = new OdbcParameter("@pw", userPW);
+			pwParam.Value = textBox2.Text;
 			//string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
 			//OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
 
@@ -130,15 +137,20 @@ namespace server
 
 					using (var command = new OdbcCommand(sql_cub_sel, connect))
 					{
-						command.Parameters.AddWithValue("@id", userID);
-						command.Parameters.AddWithValue("@pw", userPW);
 
+						//command.Parameters.Add(idParam);//④
+						//command.Parameters.Add(pwParam);//④
+						command.Parameters.AddWithValue("id", userID); //③
+						command.Parameters.AddWithValue("pw", userPW); //③
+
+						//command.Prepare();//④
 						command.ExecuteNonQuery();
-
+						
 						connect.Close();
 					}
-
+					
 					MessageBox.Show(userID + "로그인 완료");
+					serverSoc.ShowDialog();
 				}
 				catch (Exception)
 				{
@@ -149,8 +161,7 @@ namespace server
 			}
 
 
-
-
+			
 
 
 			/*using (conn)//①,②
