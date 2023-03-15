@@ -91,10 +91,11 @@ namespace server
 			}
 			catch (OdbcException)
 			{
+				log_write("[Cubrid] Connecting.....\r\n");
 			}
 			catch (Exception)
 			{
-
+				log_write("[Cubrid] Connecting.....\r\n");
 			}
 			finally
 			{
@@ -105,13 +106,14 @@ namespace server
 		private void btn_new_Click(object sender, EventArgs e)
 		{
 			signup.ShowDialog();
+			log_write("[Cubrid] 회원가입 \r\n");
 		}
 		Server serverSoc = new Server();
 		private void btn_login_Click(object sender, EventArgs e)
 		{
 			//string id = textBox1.Text; //①,②
 			//string pw = textBox2.Text; //①,②
-
+			log_write("[Cubrid] 로그인 \r\n");
 			string userID = textBox1.Text;//③
 			string userPW = textBox2.Text;//③
 

@@ -12,6 +12,7 @@ using System.Xml;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Diagnostics.Eventing.Reader;
 
 namespace server
 {
@@ -178,6 +179,7 @@ namespace server
 
 
 			string welcome = id + "님 가입을 축하드립니다.";
+			
 			//MessageBox.Show(cmd.CommandText);
 
 
@@ -185,6 +187,13 @@ namespace server
 
 		}
 
+		public class login
+		{
+			private void log_write(string text)
+			{
+				log_write("[회원가입 완료]");
+			}
+		}
 
 	}
 }
