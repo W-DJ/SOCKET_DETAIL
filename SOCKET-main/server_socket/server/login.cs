@@ -6,7 +6,9 @@ using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -80,6 +82,9 @@ namespace server
 					//MessageBox.Show(_serverComm.dbConnectString);
 					_serverComm.dbConn.Open();
 					_serverComm.dbOpenState = true;
+					log_write("[ C u b r i d ]_ C o n n e c t e d !");
+					//TxtInvoker(TextBox, "[Cubrid] Connected!!");
+
 					if (_serverComm.dbConn.State == ConnectionState.Closed)
 						return;
 				}
@@ -87,7 +92,7 @@ namespace server
 			catch (OdbcException)
 			{
 			}
-			catch (Exception )
+			catch (Exception)
 			{
 
 			}
@@ -96,7 +101,7 @@ namespace server
 				_serverComm.dbConn.Close();
 			}
 		}
-			signup signup = new signup();
+		signup signup = new signup();
 		private void btn_new_Click(object sender, EventArgs e)
 		{
 			signup.ShowDialog();
@@ -104,8 +109,8 @@ namespace server
 		Server serverSoc = new Server();
 		private void btn_login_Click(object sender, EventArgs e)
 		{
-			string id = textBox1.Text; //①,②
-			string pw = textBox2.Text; //①,②
+			//string id = textBox1.Text; //①,②
+			//string pw = textBox2.Text; //①,②
 
 			string userID = textBox1.Text;//③
 			string userPW = textBox2.Text;//③
@@ -120,13 +125,13 @@ namespace server
 
 			//string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //③
 
-            string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //④
-			OdbcParameter idParam = new OdbcParameter("@id", userID);
-			idParam.Value = textBox1.Text;
-			OdbcParameter pwParam = new OdbcParameter("@pw", userPW);
-			pwParam.Value = textBox2.Text;
-			//string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
-			//OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
+			string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //④
+																				 //OdbcParameter idParam = new OdbcParameter("@id", userID);
+																				 //idParam.Value = textBox1.Text;
+																				 //OdbcParameter pwParam = new OdbcParameter("@pw", userPW);
+																				 //pwParam.Value = textBox2.Text;
+																				 //string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
+																				 //OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
 
 			using (var connect = new OdbcConnection(_serverComm.dbConnectString))
 			{
@@ -140,16 +145,17 @@ namespace server
 
 						//command.Parameters.Add(idParam);//④
 						//command.Parameters.Add(pwParam);//④
-						command.Parameters.AddWithValue("id", userID); //③
-						command.Parameters.AddWithValue("pw", userPW); //③
+						command.Parameters.AddWithValue("@id", userID); //③
+						command.Parameters.AddWithValue("@pw", userPW); //③
 
 						//command.Prepare();//④
 						command.ExecuteNonQuery();
-						
+
 						connect.Close();
 					}
-					
+
 					MessageBox.Show(userID + "로그인 완료");
+					log_write("[로그인 완료]");
 					serverSoc.ShowDialog();
 				}
 				catch (Exception)
@@ -160,8 +166,6 @@ namespace server
 
 			}
 
-
-			
 
 
 			/*using (conn)//①,②
@@ -255,6 +259,109 @@ namespace server
 				}
 			}*/
 			//MessageBox.Show(cmd.CommandText);
+		}
+/*
+		private void TxtInvoker(object sender,string text)
+		{
+			TextBox txt = sender as TextBox;
+
+			if (txt.InvokeRequired)
+			{
+				txt.BeginInvoke(new MethodInvoker(delegate { txt.AppendText(DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss:ff]") + txt); }));
+			}
+			else
+			{
+				txt.AppendText(DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss:ff]") + txt);
+			}
+		}	*/
+
+		private void log_write(string text)
+		{
+			
+
+			DateTime nowDate = DateTime.Now;
+			string dateLogTxt = nowDate.ToString("[yyyy-MM-dd HH:mm:ss:ff]"+text);
+			string txtEnd = ".txt";
+
+			string Filepath = @"C:\Users\ansetech80\source\repos\SOCKET_DETAIL\SOCKET-main\server_socket\server\Log"+txtEnd;
+			// filepath 텍스트 파일 위치.
+			string Directoryroot = @"C:\Users\ansetech80\source\repos\SOCKET_DETAIL\SOCKET-main\server_socket\server";
+			// directory 위치. 저장할 폴더 위치
+			FileInfo txtfile = new FileInfo(Filepath);
+			DirectoryInfo directory = new DirectoryInfo(Directoryroot);
+
+			try
+			{
+				if (!directory.Exists)
+				{
+					directory.Create();
+				}
+				else
+				{
+					if (txtfile.Exists == false)
+					{
+
+						using (StreamWriter sw = new StreamWriter(Filepath))
+						{
+							sw.WriteLine(dateLogTxt);
+						}
+						File.AppendAllText(Filepath, DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss]\n"));
+					}
+					else
+					{
+						using (StreamWriter sw = File.AppendText(Filepath))
+						{
+							sw.WriteLine(dateLogTxt);
+							sw.Close();
+						}
+						//var sw = new StreamWriter(Fpath, true);
+						//sw.Write(DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss]\n"));
+						//File.AppendAllText(Fpath, DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss]\n"));
+						
+					}
+
+
+				}
+
+
+
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+			/*string temp;
+
+			DirectoryInfo directory= new DirectoryInfo(DirPath);
+			FileInfo fileInfo= new FileInfo(FilePath);
+
+			try
+			{
+				if (!directory.Exists) Directory.CreateDirectory(DirPath);
+				if (fileInfo.Exists) {
+					using (StreamWriter sw = new StreamWriter(FilePath))
+					{
+						temp = string.Format("[{0}]{1}", DateTime.Now, str);
+						sw.WriteLine(temp);
+						sw.Close();
+					}
+				}
+				else
+				{
+					using (StreamWriter sw = File.AppendText(FilePath))
+					{
+						temp = string.Format("[{0}]{1}",DateTime.Now, str);
+						sw.WriteLine(temp);
+						sw.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}*/
 		}
 	}
 }
