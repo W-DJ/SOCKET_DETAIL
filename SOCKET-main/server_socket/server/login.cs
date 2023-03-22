@@ -127,13 +127,21 @@ namespace server
 
 			//string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //③
 
-			string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //④
-																				 //OdbcParameter idParam = new OdbcParameter("@id", userID);
-																				 //idParam.Value = textBox1.Text;
-																				 //OdbcParameter pwParam = new OdbcParameter("@pw", userPW);
-																				 //pwParam.Value = textBox2.Text;
-																				 //string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
-																				 //OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
+			//string sql_cub_sel = "SELECT * FROM sock_table WHERE id=? and pw=?"; //④
+			//																	 //OdbcParameter idParam = new OdbcParameter("@id", userID);
+			//																	 //idParam.Value = textBox1.Text;
+			//																	 //OdbcParameter pwParam = new OdbcParameter("@pw", userPW);
+			//																	 //pwParam.Value = textBox2.Text;
+			//																	 //string sql_cub_ins = "INSERT INTO sock (id,pw) VALUES (@id,@pw);";
+			//																	 //OdbcConnection conn = new OdbcConnection(_serverComm.dbConnectString);//①,②
+			
+			//string query = "SELECT * FROM Products Where ProductID = @ProductID and ProductNAME = @ProductNAME;";
+			//string query2 = "SET @userID='test'";
+			//string query3 = "SET @userPW='1234'";
+			//string query4 = "EXECUTE id_ready USING @userID,@userPW";
+
+			//EXECUTE id_ready USING 
+
 
 			using (var connect = new OdbcConnection(_serverComm.dbConnectString))
 			{
@@ -141,8 +149,10 @@ namespace server
 				try
 				{
 					connect.Open(); //연결
+					string query1 = "PREPARE id_ready FROM 'SELECT * FROM sock_table WHERE id=? and pw=?'";
 
-					using (var command = new OdbcCommand(sql_cub_sel, connect))
+					string query = "SELECT * FROM sock_table Where id=? and pw=?;";
+					using (var command = new OdbcCommand(query1, connect)) //①sql_cub_sel , ②query1 
 					{
 
 						//command.Parameters.Add(idParam);//④
@@ -151,14 +161,67 @@ namespace server
 						command.Parameters.AddWithValue("@pw", userPW); //③
 
 						//command.Prepare();//④
+						//Console.WriteLine(query1);
+						//int ss = command.ExecuteNonQuery();
 						command.ExecuteNonQuery();
+
+
+						DataSet dataSet = new DataSet();//①,②
+						Server serverSoc = new Server();//①,②
+
+						OdbcDataAdapter adapter = new OdbcDataAdapter(); //①//odbcdataAdapter는 서버에서 데이터를 가져온뒤 연결 끊음
+
+
+						try//①,②
+						{
+							command.Connection = connect;
+
+							if (_serverComm.dbOpenState)  //ok
+							{
+								adapter.SelectCommand = command;
+
+								connect.Close();
+								adapter.Fill(dataSet); // adapter에게 채운다. (dataSet)을.
+
+								adapter.DeleteCommand = command;
+
+								if (dataSet.Tables.Count != 0)            //ok
+								{
+									if (dataSet.Tables[0].Rows.Count > 0)     //ok
+									{
+										MessageBox.Show("로그인 되었습니다.");
+										log_write("[로그인 완료]");
+										serverSoc.ShowDialog();
+									}
+									else
+									{
+										MessageBox.Show("아이디,비밀번호를 확인하세요");
+										return;
+									}
+								}
+								//같은 id와 pw와 있는 지 돌려야지
+
+								// id는 primary key니까 중복없을 것이고
+								//pw는 3번이상 틀릴 경우 block 처리 하는 조건을 걸어야겠군.
+
+								if (dataSet.Tables.Count == 0)
+								{
+									MessageBox.Show("데이터 없음");
+								}
+
+							}
+							else
+							{
+								MessageBox.Show("연결을 확인하세요");
+							}
+						}
+						catch (OdbcException)
+						{
+							MessageBox.Show("DB연결을 확인하세요");
+						}
 
 						connect.Close();
 					}
-
-					MessageBox.Show(userID + "로그인 완료");
-					log_write("[로그인 완료]");
-					serverSoc.ShowDialog();
 				}
 				catch (Exception)
 				{
@@ -259,8 +322,8 @@ namespace server
 
 					conn.Close();
 				}
-			}*/
-			//MessageBox.Show(cmd.CommandText);
+			}*//*
+			//MessageBox.Show(cmd.CommandText);*/
 		}
 /*
 		private void TxtInvoker(object sender,string text)
@@ -364,6 +427,11 @@ namespace server
 
 				throw;
 			}*/
+		}
+
+		private void textBox1_TextChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
