@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Cubrid DB Connect -->
+  <DB_Connect>
+    SERVER=10.10.10.60;
+    DB_NAME=cubConn;
+    PORT=33000;
+    UID=dba;
+    PWD=test;
+    CHARSET=UTF-8;</DB_Connect>

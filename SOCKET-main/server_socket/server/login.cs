@@ -9,11 +9,13 @@ using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 
 namespace server
 {
@@ -149,10 +151,10 @@ namespace server
 				try
 				{
 					connect.Open(); //연결
-					string query1 = "PREPARE id_ready FROM 'SELECT * FROM sock_table WHERE id=? and pw=?'";
+					//string query1 = "PREPARE id_ready FROM 'SELECT * FROM sock_table WHERE id=? and pw=?'";
 
 					string query = "SELECT * FROM sock_table Where id=? and pw=?;";
-					using (var command = new OdbcCommand(query1, connect)) //①sql_cub_sel , ②query1 
+					using (var command = new OdbcCommand(query, connect)) //①sql_cub_sel , ②query1 
 					{
 
 						//command.Parameters.Add(idParam);//④
@@ -429,10 +431,24 @@ namespace server
 			}*/
 		}
 
-		private void textBox1_TextChanged(object sender, EventArgs e)
-		{
+		
 
+		private void btn_login_MouseHover(object sender, EventArgs e)
+		{
+			btn_login.BackColor = Color.LightGray;
+			btn_login.Image = null;
 		}
+
+		private void btn_login_MouseLeave(object sender, EventArgs e)
+		{
+			
+			btn_login.BackColor = Color.Transparent;
+			btn_login.Image = Properties.Resources.cloud_small;
+		
+			
+		}
+
+		
 	}
 }
 

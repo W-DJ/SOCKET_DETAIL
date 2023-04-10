@@ -135,7 +135,7 @@ namespace client
 			//MessageBox.Show("보낸 메시지 : " + msg);
 			listChat.Items.Add(" 회원 : " + msg);
 
-				DBTest();
+				DB_insert();
 
 				textBox3.Clear();
 
@@ -145,30 +145,24 @@ namespace client
 
 		}
 
-		private void DBTest()
+		private void DB_insert()
 		{
 			string conn_string = "Server=10.10.10.60;Port=3306;Database=test;Uid=root;Pwd=ansetech";
 			MySqlConnection conn= new MySqlConnection(conn_string);
 			MySqlCommand cmd = conn.CreateCommand();
 
-			string NAM = "client";
+			string USER = "client";
 			string CHAT = textBox3.Text;
 
-
-			//string sql_makedb = "INSERT INTO sock (name,chat) VALUES"+"('"+NAM+"','"+CHAT+"');";  //①
-			//string sql_makedb = "INSERT INTO sock (name,chat) VALUES (?,?);"; //②
-			string sql_makedb = "INSERT INTO sock (name,chat) VALUES (@name,@chat);"; //③
-
-			//MessageBox.Show(sql_makedb);
+			string sql_makedb = "INSERT INTO sock (name,chat) VALUES (@name,@chat);"; 
 			cmd.CommandText = sql_makedb;
-		
 
 			try
 			{
 				conn.Open();
 
-				cmd.Parameters.AddWithValue("@name", NAM); //②,③
-				cmd.Parameters.AddWithValue("@chat", CHAT); //②,③
+				cmd.Parameters.AddWithValue("@name", USER);
+				cmd.Parameters.AddWithValue("@chat", CHAT);
 
 				cmd.ExecuteNonQuery();
 

@@ -90,6 +90,7 @@
 			this.button1_login.TabIndex = 18;
 			this.button1_login.Text = "로그인";
 			this.button1_login.UseVisualStyleBackColor = true;
+			this.button1_login.Click += new System.EventHandler(this.button1_login_Click);
 			// 
 			// login
 			// 

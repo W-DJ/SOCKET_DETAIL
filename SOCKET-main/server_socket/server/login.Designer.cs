@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(login));
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBox2 = new System.Windows.Forms.TextBox();
@@ -70,7 +71,6 @@
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(100, 21);
 			this.textBox1.TabIndex = 14;
-			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			// 
 			// btn_new
 			// 
@@ -85,19 +85,25 @@
 			// 
 			// btn_login
 			// 
+			this.btn_login.BackColor = System.Drawing.Color.Transparent;
+			this.btn_login.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btn_login.Image = ((System.Drawing.Image)(resources.GetObject("btn_login.Image")));
 			this.btn_login.Location = new System.Drawing.Point(337, 211);
 			this.btn_login.Margin = new System.Windows.Forms.Padding(0);
 			this.btn_login.Name = "btn_login";
 			this.btn_login.Size = new System.Drawing.Size(110, 37);
-			this.btn_login.TabIndex = 18;
+			this.btn_login.TabIndex = 1;
 			this.btn_login.Text = "로그인";
-			this.btn_login.UseVisualStyleBackColor = true;
+			this.btn_login.UseVisualStyleBackColor = false;
 			this.btn_login.Click += new System.EventHandler(this.btn_login_Click);
+			this.btn_login.MouseLeave += new System.EventHandler(this.btn_login_MouseLeave);
+			this.btn_login.MouseHover += new System.EventHandler(this.btn_login_MouseHover);
 			// 
 			// login
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(800, 450);
 			this.Controls.Add(this.btn_login);
 			this.Controls.Add(this.label2);
